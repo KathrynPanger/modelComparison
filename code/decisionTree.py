@@ -1,15 +1,19 @@
 from cleanDataFrame import CleanDataFrame
 from typing import List
 import pyspark
+import math
 from pyspark.sql import functions as F
 from pyspark.sql.types import FloatType
 from scipy import stats
+from variable import Variable
+
 
 
 class DecisionTree():
     def __init__(self, data: pyspark.sql.DataFrame):
         self.data = data
         self.n = self.data.select(data.columns[0]).count()
+        self.variables = {}
 
     def getEntropyContinuous(self,
                              data: pyspark.sql.DataFrame,
@@ -62,6 +66,19 @@ class DecisionTree():
                 self.data = self.data.withColumn(f"{col}_entro_p", proportionOfTotal(f"{col}_pvalue"))
                 #Ha! Ya Get it?! Entro "p"?
                 # No? Okay.
+
+                #find the surprise of each observation
+                @F.udf(returnType=FloatType())
+                def pToSurprise(observedValue):
+                    if observedValue is not None:
+                        return observedValue * math.log(1/observedValue, 10)
+                    else:
+                        return None
+                self.data = self.data.withColumn(f"{col}_surprise", pToSurprise(f"{col}_entro_p"))
+                entropy = self.data.select(f"{col}_surprise").agg(F.sum(f"{col}_surprise")).collect()[0][0]
+                variable = Variable(col)
+                variable.entropy = entropy
+                self.variables[col] = variable
 
     def getEntropyDiscrete(self, data: pyspark.sql.DataFrame, varlist: List[str]):
         pass

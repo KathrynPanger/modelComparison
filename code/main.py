@@ -23,6 +23,8 @@ if __name__ == "__main__":
     chessDf = cleanChess.data
     chessTree = DecisionTree(chessDf)
     chessTree.getEntropyContinuous(data = chessTree.data, varlist = ["white_rating"])
-    chessTree.data.select("white_rating_pvalue").show()
-    chessTree.data.select("white_rating_entro_p").show()
-    chessTree.data.select("white_rating_entro_p").agg(F.sum("white_rating_entro_p")).show()
+    #chessTree.data.select("white_rating_pvalue").show()
+    #chessTree.data.select("white_rating_entro_p").show()
+   # chessTree.data.select("white_rating_entro_p").agg(F.sum("white_rating_entro_p")).show()
+   # chessTree.data.select("white_rating_surprise").show()
+    print(chessTree.variables)
