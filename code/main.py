@@ -19,7 +19,8 @@ def stripUDF(x):
 
 
 if __name__ == "__main__":
-    chessDf = CleanDataFrame("../data/chess.csv")
-    chessDf.data.select("end_time").show()
+    cleanChess = CleanDataFrame("../data/chess.csv")
+    chessDf = cleanChess.data
     chessTree = DecisionTree(chessDf)
-    chessTree.getEntropy(data = chessDf.data, varlist = [col for col in chessDf.data.columns])
+    chessTree.getEntropyContinuous(data = chessTree.data, varlist = [col for col in chessTree.data.columns])
+    chessTree.data.show()
