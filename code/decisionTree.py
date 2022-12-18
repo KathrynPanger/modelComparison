@@ -82,3 +82,5 @@ class DecisionTree():
 
     def getEntropyDiscrete(self, data: pyspark.sql.DataFrame, varlist: List[str]):
         pass
+    def getEntropyDiscrete2(self, data):
+        pass
