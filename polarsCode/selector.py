@@ -14,14 +14,15 @@ class Selector():
         sampleStdDev = variable.std()[0, 0]
         standardError = sampleStdDev/self.n**(1/2)
         degreesOfFreedom = self.n - 1
-        tValues = (variable - sampleMean) / standardError
-        proportionOfTotal = tValues / tValues.sum()[0,0]
+        tValues = variable.with_column(((pl.col(columnName) - sampleMean) / sampleStdDev).alias("t_values"))
+        p = tValues.with_column(pl.col("t_values").apply(lambda x: stats.t.sf(x, degreesOfFreedom)).alias("p_values"))
+        #proportionOfTotal = tValues / tValues.sum()[0,0]
         #surprise = proportionOfTotal.apply(lambda x: [math.log(1/item, 2) for item in x])
 
         # tValues = (variable - sampleMean) / sampleStdDev
         # pValues = tValues.apply(lambda x: [float(stats.t.sf(abs(item), degreesOfFreedom)) for item in x])
         # pValues = variable.apply(lambda x: [float(stats.t.sf(abs((item - sampleMean) / sampleStdDev), degreesOfFreedom)) for item in x])
-        return proportionOfTotal
+        return p
 
 
 
