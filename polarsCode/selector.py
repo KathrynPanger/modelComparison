@@ -27,7 +27,8 @@ class Selector():
     def getEntropyContinuousBins(self):
         pass
     def getEntropyDiscreet(self, columnName):
-        originalVariable = self.data.select(pl.col(columnName))
-        return originalVariable.unique()[0,0]
+        counts = self.data.select(pl.col(columnName)).groupby(pl.col(columnName)).agg(pl.count().alias("counts"))
+        return counts
+
     def getSplitStats(self):
         pass
