@@ -28,7 +28,10 @@ class Selector():
         pass
     def getEntropyDiscreet(self, columnName):
         counts = self.data.select(pl.col(columnName)).groupby(pl.col(columnName)).agg(pl.count().alias("counts"))
-        return counts
+        probabilityOfSelection = counts.with_column((pl.col("counts")/self.n).alias("probability_of_selection"))
+        surprise = probabilityOfSelection.with_column(pl.col("probability_of_selection").apply(lambda x: math.log(1/x, 2)).alias("surprise"))
+        entropy = surprise.select("surprise").sum()[0,0]
+        return entropy
 
     def getSplitStats(self):
         pass
