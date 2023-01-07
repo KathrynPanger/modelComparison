@@ -26,7 +26,8 @@ class Selector():
 
     def getEntropyContinuousBins(self):
         pass
-    def getEntropyDiscreet(self):
-        pass
-    def getSplitabilityScore(self):
+    def getEntropyDiscreet(self, columnName):
+        originalVariable = self.data.select(pl.col(columnName))
+        return originalVariable.unique()[0,0]
+    def getSplitStats(self):
         pass
